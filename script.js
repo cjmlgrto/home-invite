@@ -99,6 +99,7 @@ svg.addEventListener('pointerdown', function (evt) {
   svg.setPointerCapture(evt.pointerId);
   stopPlaceholderCycle();
   canvasPlaceholder.classList.add('is-hidden');
+  clearBtn.classList.add('is-visible');
   var vars = svgVars();
   var p = pointToSvg(evt);
   currentPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -134,6 +135,7 @@ svg.addEventListener('pointerleave', endStroke);
 clearBtn.addEventListener('click', function () {
   while (svg.firstChild) svg.removeChild(svg.firstChild);
   canvasPlaceholder.classList.remove('is-hidden');
+  clearBtn.classList.remove('is-visible');
   startPlaceholderCycle();
   serialize();
 });
