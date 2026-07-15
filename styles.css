@@ -93,38 +93,43 @@ h1 {
   align-items: center;
   justify-content: center;
   position: relative;
+  container-type: size;
 }
 
-#drawing-svg {
+.canvas-square {
+  position: relative;
   width: 100%;
   height: 100%;
   aspect-ratio: 1;
   max-width: 100%;
   max-height: 100%;
-  background: var(--color-canvas);
-  touch-action: none;
-  display: block;
+  width: min(100cqw, 100cqh);
+  height: min(100cqw, 100cqh);
 }
 
+#drawing-svg,
 .canvas-placeholder {
   position: absolute;
   inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 14%;
-  text-align: center;
-  color: var(--color-placeholder);
-  font-family: var(--font-family);
-  font-weight: 700;
-  font-size: 1.0625rem;
-  line-height: 1.35;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+#drawing-svg {
+  background: var(--color-canvas);
+  touch-action: none;
+}
+
+.canvas-placeholder {
   pointer-events: none;
   user-select: none;
+  opacity: 1;
+  transition: opacity 0.25s ease;
 }
 
 .canvas-placeholder.is-hidden {
-  display: none;
+  opacity: 0;
 }
 
 .clear-btn {

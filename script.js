@@ -27,6 +27,23 @@ function serialize() {
   drawingInput.value = svg.outerHTML;
 }
 
+function playPlaceholderAnimation() {
+  var paths = canvasPlaceholder.querySelectorAll('path');
+  for (var i = 0; i < paths.length; i++) {
+    var path = paths[i];
+    var length = path.getTotalLength();
+    path.style.strokeDasharray = length;
+    path.style.strokeDashoffset = length;
+    if (path.getAnimations) {
+      path.getAnimations().forEach(function (anim) { anim.cancel(); });
+    }
+    path.animate(
+      [{ strokeDashoffset: length }, { strokeDashoffset: 0 }],
+      { duration: 3000, delay: i * 35, easing: 'ease-in-out', fill: 'forwards' }
+    );
+  }
+}
+
 svg.addEventListener('pointerdown', function (evt) {
   evt.preventDefault();
   drawing = true;
@@ -67,9 +84,12 @@ svg.addEventListener('pointerleave', endStroke);
 clearBtn.addEventListener('click', function () {
   while (svg.firstChild) svg.removeChild(svg.firstChild);
   canvasPlaceholder.classList.remove('is-hidden');
+  playPlaceholderAnimation();
   serialize();
 });
 
 form.addEventListener('submit', function () {
   serialize();
 });
+
+playPlaceholderAnimation();
