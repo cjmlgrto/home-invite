@@ -1,6 +1,6 @@
 :root {
   --color-bg: #f5f5f5;
-  --color-fg: #cb2927;
+  --color-fg: #00651C;
   --color-canvas: #ffffff;
   --color-input-text: #000000;
   --color-placeholder: #969696;
@@ -38,10 +38,8 @@ h1 {
   margin: 0;
   flex: 0 0 auto;
   text-align: center;
-  font-size: 0.8125rem;
+  font-size: 1rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
 }
 
 /* landing page */
@@ -132,10 +130,24 @@ h1 {
   opacity: 0;
 }
 
+.placeholder-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.placeholder-frame.is-active {
+  opacity: 1;
+}
+
 .clear-btn {
   position: absolute;
   top: 0;
-  right: 0;
+  right: 8px;
   min-height: auto;
   padding: 8px 2px;
   border: none;
@@ -147,7 +159,7 @@ h1 {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  text-decoration: underline;
+  text-decoration: none;
   text-underline-offset: 3px;
 }
 

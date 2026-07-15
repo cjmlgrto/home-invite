@@ -27,11 +27,27 @@ function serialize() {
   drawingInput.value = svg.outerHTML;
 }
 
-function playPlaceholderAnimation() {
-  var paths = canvasPlaceholder.querySelectorAll('path');
+var placeholderFrames = Array.prototype.slice.call(canvasPlaceholder.querySelectorAll('.placeholder-frame'));
+var placeholderIndex = 0;
+var placeholderTimers = [];
+var placeholderRunId = 0;
+
+var PATH_DURATION = 3000;
+var STAGGER_SPAN = 735;
+var HOLD_AFTER_DRAW = 700;
+var CROSSFADE_DURATION = 500;
+
+function clearPlaceholderTimers() {
+  placeholderTimers.forEach(function (t) { clearTimeout(t); });
+  placeholderTimers = [];
+}
+
+function drawPlaceholderFrame(frame) {
+  var paths = frame.querySelectorAll('path');
   for (var i = 0; i < paths.length; i++) {
     var path = paths[i];
     var length = path.getTotalLength();
+    var delay = paths.length > 1 ? (i / (paths.length - 1)) * STAGGER_SPAN : 0;
     path.style.strokeDasharray = length;
     path.style.strokeDashoffset = length;
     if (path.getAnimations) {
@@ -39,15 +55,49 @@ function playPlaceholderAnimation() {
     }
     path.animate(
       [{ strokeDashoffset: length }, { strokeDashoffset: 0 }],
-      { duration: 3000, delay: i * 35, easing: 'ease-in-out', fill: 'forwards' }
+      { duration: PATH_DURATION, delay: delay, easing: 'ease-in-out', fill: 'forwards' }
     );
   }
+}
+
+function advancePlaceholder(runId) {
+  if (runId !== placeholderRunId) return;
+  var nextIndex = (placeholderIndex + 1) % placeholderFrames.length;
+  placeholderFrames[placeholderIndex].classList.remove('is-active');
+  placeholderFrames[nextIndex].classList.add('is-active');
+  placeholderIndex = nextIndex;
+  drawPlaceholderFrame(placeholderFrames[placeholderIndex]);
+  var t = setTimeout(function () {
+    advancePlaceholder(runId);
+  }, STAGGER_SPAN + PATH_DURATION + HOLD_AFTER_DRAW + CROSSFADE_DURATION);
+  placeholderTimers.push(t);
+}
+
+function startPlaceholderCycle() {
+  clearPlaceholderTimers();
+  placeholderRunId++;
+  var runId = placeholderRunId;
+  placeholderIndex = 0;
+  placeholderFrames.forEach(function (frame, i) {
+    frame.classList.toggle('is-active', i === 0);
+  });
+  drawPlaceholderFrame(placeholderFrames[0]);
+  var t = setTimeout(function () {
+    advancePlaceholder(runId);
+  }, STAGGER_SPAN + PATH_DURATION + HOLD_AFTER_DRAW + CROSSFADE_DURATION);
+  placeholderTimers.push(t);
+}
+
+function stopPlaceholderCycle() {
+  clearPlaceholderTimers();
+  placeholderRunId++;
 }
 
 svg.addEventListener('pointerdown', function (evt) {
   evt.preventDefault();
   drawing = true;
   svg.setPointerCapture(evt.pointerId);
+  stopPlaceholderCycle();
   canvasPlaceholder.classList.add('is-hidden');
   var vars = svgVars();
   var p = pointToSvg(evt);
@@ -84,7 +134,7 @@ svg.addEventListener('pointerleave', endStroke);
 clearBtn.addEventListener('click', function () {
   while (svg.firstChild) svg.removeChild(svg.firstChild);
   canvasPlaceholder.classList.remove('is-hidden');
-  playPlaceholderAnimation();
+  startPlaceholderCycle();
   serialize();
 });
 
@@ -92,4 +142,4 @@ form.addEventListener('submit', function () {
   serialize();
 });
 
-playPlaceholderAnimation();
+startPlaceholderCycle();
