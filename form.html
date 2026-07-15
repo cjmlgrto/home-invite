@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>RSVP</title>
+<link rel="stylesheet" href="fonts.css">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -13,6 +14,7 @@
 
   <div class="canvas-wrap">
     <svg id="drawing-svg" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg"></svg>
+    <p class="canvas-placeholder" id="canvas-placeholder">What is home to you?</p>
     <button type="button" class="clear-btn" id="clear-btn">Clear</button>
   </div>
 
@@ -24,9 +26,11 @@
       <label>Don't fill this out: <input name="bot-field" tabindex="-1" autocomplete="off"></label>
     </p>
 
-    <input class="field" type="text" name="name" placeholder="Name" required>
-    <input class="field" type="email" name="email" placeholder="Email" required>
-    <textarea class="field" name="note" rows="2" placeholder="Note (optional)"></textarea>
+    <div class="field-row">
+      <input class="field" type="text" name="name" placeholder="Name" required>
+      <input class="field" type="email" name="email" placeholder="Email" required>
+    </div>
+    <textarea class="field" name="note" rows="2" placeholder="Note (e.g. dietary restrictions)"></textarea>
 
     <button class="submit-btn" type="submit">RSVP</button>
   </form>

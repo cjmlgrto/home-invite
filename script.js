@@ -1,6 +1,7 @@
 var svg = document.getElementById('drawing-svg');
 var drawingInput = document.getElementById('drawing');
 var clearBtn = document.getElementById('clear-btn');
+var canvasPlaceholder = document.getElementById('canvas-placeholder');
 var form = document.getElementById('rsvp-form');
 var currentPath = null;
 var drawing = false;
@@ -30,6 +31,7 @@ svg.addEventListener('pointerdown', function (evt) {
   evt.preventDefault();
   drawing = true;
   svg.setPointerCapture(evt.pointerId);
+  canvasPlaceholder.classList.add('is-hidden');
   var vars = svgVars();
   var p = pointToSvg(evt);
   currentPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -64,6 +66,7 @@ svg.addEventListener('pointerleave', endStroke);
 
 clearBtn.addEventListener('click', function () {
   while (svg.firstChild) svg.removeChild(svg.firstChild);
+  canvasPlaceholder.classList.remove('is-hidden');
   serialize();
 });
 
